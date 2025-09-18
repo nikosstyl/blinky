@@ -27,9 +27,9 @@ jobs:
       - name: Package binaries
         run: |
           location_elf=$(find build -type f | grep .elf)
-          echo "Found .elf file: $(location_elf)"
+          echo "Found .elf file: $location_elf"
           mkdir -p release
-          cp $(location_elf) release/
+          cp $location_elf release/
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

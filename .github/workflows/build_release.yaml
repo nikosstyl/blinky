@@ -2,7 +2,8 @@ name: Build STM32 firmware
 
 on:
   push:
-  pull_request:
+    tags:
+      - 'v*'   # runs only when pushing tags like v1.0.0, v2.3, etc.
 
 jobs:
   build:
@@ -23,8 +24,15 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Package binaries
+        run: |
+          mkdir -p release
+          cp build/**/*.elf release/ || true
+          cp build/**/*.bin release/ || true
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: firmware
-          path: build/**/*.elf
+          files: release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
